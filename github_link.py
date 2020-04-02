@@ -7,7 +7,6 @@ import subprocess
 
 class CopyGithubLinkCommand(sublime_plugin.TextCommand):
     def run_git(self, cmd, cwd):
-        print(cmd, cwd)
         try:
             p = subprocess.Popen(cmd,
                                  stdout=subprocess.PIPE,
@@ -15,7 +14,6 @@ class CopyGithubLinkCommand(sublime_plugin.TextCommand):
                                  cwd=cwd)
             result = p.communicate()
             output = result[0].decode('utf-8').strip()
-            print('output: %s' % output)
         except Exception as e:
             print('Error running %s: %s' % (cmd, e))
             return
@@ -39,7 +37,6 @@ class CopyGithubLinkCommand(sublime_plugin.TextCommand):
             host = m.group('host')
             path = m.group('path')
             remote = 'https://%s/%s' % (host, path)
-        print('parsed remote %s' % remote)
         if remote[-4:] == '.git':
             remote = remote[:-4]
         return remote
@@ -56,21 +53,19 @@ class CopyGithubLinkCommand(sublime_plugin.TextCommand):
         project_dir = self.run_git(['git', 'rev-parse', '--show-toplevel'], dirname)
         relpath = self.run_git(['git', 'ls-files', '--error-unmatch', filename], project_dir)
         if not relpath:
-            sublime.status_message("File is not tracked in git.")
+            sublime.error_message("%s is not tracked in git." % filename)
             return
         repo_url = self.get_repo_url()
         if not repo_url:
-            sublime.status_message("Error: No remote url for project")
+            sublime.error_message("Error: No git remote url found.")
             return
         url = '%s/blob/%s/%s' % (repo_url, branchname, relpath) # todo: line number
         regions = self.view.sel()
         if len(regions) > 0:
             line, col = self.view.rowcol(regions[0].begin())
-            print('LINE', line)
             url += '#L%s' % (line + 1)
-        print('url: %s' % url)
         sublime.set_clipboard(url)
-        sublime.status_message("Copied Github link")
+        sublime.status_message("Copied Github link: %s" % url)
 
 
     def is_enabled(self):
