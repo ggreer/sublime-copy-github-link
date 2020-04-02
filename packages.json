@@ -1,0 +1,21 @@
+{
+    "schema_version": "3.0",
+    "packages": [
+        {
+            "name": "Copy Github Link",
+            "author": "Geoff Greer",
+            "description": "",
+            "details": "https://github.com/ggreer/sublime-copy-github-link",
+            "labels": [
+                "code sharing",
+                "github"
+            ],
+            "releases": [
+                {
+                    "sublime_text": "*",
+                    "tags": true
+                }
+            ]
+        }
+    ]
+}
