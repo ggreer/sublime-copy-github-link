@@ -70,7 +70,7 @@ class CopyGithubLinkCommand(sublime_plugin.TextCommand):
 
     def is_enabled(self):
         if not self.get_repo_url():
-            return false
+            return False
 
         filename = self.view.file_name()
         dirname = os.path.dirname(filename)
